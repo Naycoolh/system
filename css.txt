@@ -1,0 +1,77 @@
+-- Tabla de Usuarios
+CREATE TABLE usuarios (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100),
+    correo VARCHAR(100),
+    contrasena VARCHAR(100),
+    tipo ENUM('administrador', 'cliente')
+);
+
+-- Tabla de Categorías
+CREATE TABLE categorias (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100)
+);
+
+-- Tabla de Productos
+CREATE TABLE productos (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100),
+    descripcion TEXT,
+    precio DECIMAL(10,2),
+    stock INT,
+    categoria_id INT,
+    FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+);
+
+-- Tabla de Pedidos
+CREATE TABLE pedidos (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    usuario_id INT,
+    fecha_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    total_pedido DECIMAL(10,2),
+    estado ENUM('pendiente', 'completado', 'cancelado'),
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
+
+-- Tabla de Detalles de Pedidos
+CREATE TABLE detalles_pedido (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pedido_id INT,
+    producto_id INT,
+    cantidad INT,
+    precio_unitario DECIMAL(10,2),
+    total_linea DECIMAL(10,2),
+    FOREIGN KEY (pedido_id) REFERENCES pedidos(id),
+    FOREIGN KEY (producto_id) REFERENCES productos(id)
+);
+
+-- Tabla de Métodos de Pago
+CREATE TABLE metodos_pago (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100)
+);
+
+-- Tabla de Pagos
+CREATE TABLE pagos (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pedido_id INT,
+    metodo_pago_id INT,
+    monto DECIMAL(10,2),
+    fecha_pago TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (pedido_id) REFERENCES pedidos(id),
+    FOREIGN KEY (metodo_pago_id) REFERENCES metodos_pago(id)
+);
+
+-- Tabla de Direcciones de Envío (Si aplica)
+CREATE TABLE direcciones_envio (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    usuario_id INT,
+    direccion VARCHAR(255),
+    ciudad VARCHAR(100),
+    estado VARCHAR(100),
+    codigo_postal VARCHAR(10),
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
+
+-- Otras tablas según tus necesidades (por ejemplo, opiniones de productos, cupones, etc.)
